@@ -42,6 +42,9 @@ class Grey(NLM):
 class RGB(NLM):
     def __init__(self, img, name, address, eng=matlab.engine.start_matlab(), noise=filter.gauss):
         super().__init__(img, name, address, eng, noise)
+        self.image_ssim = None
 
+    def Process(self):
+        b, g, r = cv2.split()
 
 
