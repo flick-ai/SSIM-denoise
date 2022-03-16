@@ -69,8 +69,8 @@ def SSIM_HSV(src, sample, i, f=10, t=2):
     for r in range(-t, t):
         for s in range(-t, t):
             w_image = padding[t + r:t + H + f + r + 1, t + s:t + W + f + s + 1, :]
-            weight_s = cal(image[:, :, 1], w_image[:, :, 0], eng)
-            weight_v = cal(image[:, :, 2], w_image[:, :, 1], eng)
+            weight_s = cal(image[:, :, 1], w_image[:, :, 1], eng)
+            weight_v = cal(image[:, :, 2], w_image[:, :, 2], eng)
             weight = (weight_s ** i + weight_v ** i) ** (1 / i)
             sum_image = sum_image + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1)) * w_image[f:f + H, :f + W, :]
             sum_weight = sum_weight + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1))
