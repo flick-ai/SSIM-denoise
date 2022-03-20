@@ -51,7 +51,7 @@ def SSIM_RGB(src, sample, i, f=10, t=2):
             weight_g = cal(image[:, :, 1], w_image[:, :, 1], eng)
             weight_r = cal(image[:, :, 2], w_image[:, :, 2], eng)
             weight = (weight_b ** i + weight_g ** i + weight_r ** i) ** (1 / i)
-            sum_image = sum_image + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1)) * w_image[f:f + H, :f + W, :]
+            sum_image = sum_image + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1)) * w_image[f:f + H, f:f + W, :]
             sum_weight = sum_weight + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1))
     out = sum_image / sum_weight
     return out
