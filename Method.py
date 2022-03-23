@@ -84,9 +84,9 @@ class RGB_nature(NLM):
 
     def Process(self):
         self.NLM()
-        self.PSNR = filter.PSNR(self.image_nlm, self.image)
-        self.SSIM = filter.SSIM(self.image_nlm, self.image, self.eng)
-        Save(self.image_nlm, self.name, self.address, self.PSNR, self.SSIM, self.__class__.__name__ + '_NLM')
+        # self.PSNR = filter.PSNR(self.image_nlm, self.image)
+        # self.SSIM = filter.SSIM(self.image_nlm, self.image, self.eng)
+        # Save(self.image_nlm, self.name, self.address, self.PSNR, self.SSIM, self.__class__.__name__ + '_NLM')
         self.image_ssim = filter.SSIM_RGB(self.image_noise, self.image_nlm, 2)
         self.PSNR = filter.PSNR(self.image_ssim, self.image)
         self.SSIM = filter.SSIM(self.image_ssim, self.image, self.eng)
@@ -127,8 +127,13 @@ class HSV_nature(NLM):
 
     def NLM(self, hsv):
         h, s, v = cv2.split(hsv)
+        cv2.imwrite("h1.png", h)
+        # print(s)
+        # print(v)
         s_nlm = filter.NLM(s)
         v_nlm = filter.NLM(v)
+        cv2.imwrite("s1.png", s_nlm)
+        cv2.imwrite("v1.png", v_nlm)
         self.image_nlm = cv2.merge(
             [np.array(h, dtype=float), np.array(s_nlm, dtype=float), np.array(v_nlm, dtype=float)])
         return h
@@ -140,11 +145,13 @@ class HSV_nature(NLM):
         self.PSNR = filter.PSNR(self.image_nlm, self.image)
         self.SSIM = filter.SSIM(self.image_nlm, self.image, self.eng)
         Save(self.image_nlm, self.name, self.address, self.PSNR, self.SSIM, self.__class__.__name__ + '_NLM')
-        self.image_ssim = filter.SSIM_HSV(self.image_noise, self.image_nlm, 2)
-        h_ssim, s_ssim, v_ssim = cv2.split(self.image_ssim)
+        ssim = filter.SSIM_HSV(hsv[:, :, 1:], self.image_nlm[:, :, 1:], 2)
         self.image_ssim = cv2.merge(
-            [np.array(h, dtype=float), np.array(s_ssim, dtype=float), np.array(v_ssim, dtype=float)])
+            [np.array(h, dtype=float), np.array(ssim[:, :, 0], dtype=float), np.array(ssim[:, :, 1], dtype=float)])
+        cv2.imwrite("h.png", h)
+        cv2.imwrite("ssim1 .png", self.image_ssim)
         self.image_ssim = cv2.cvtColor(np.uint8(self.image_ssim), cv2.COLOR_HSV2BGR)
+        print(np.uint8(self.image_ssim))
         self.PSNR = filter.PSNR(self.image_ssim, self.image)
         self.SSIM = filter.SSIM(self.image_ssim, self.image, self.eng)
         Save(self.image_ssim, self.name, self.address, self.PSNR, self.SSIM, self.__class__.__name__ + '_SSIM')

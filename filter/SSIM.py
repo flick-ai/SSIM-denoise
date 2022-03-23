@@ -60,6 +60,7 @@ def SSIM_RGB(src, sample, i, f=10, t=2):
 def SSIM_HSV(src, sample, i, f=10, t=2):
     src = create(src, sample)
     H, W, C = src.shape
+    print(src.shape)
     sum_image = np.zeros((H, W, C), np.uint8)
     sum_weight = np.zeros((H, W, 1), np.uint8)
     pad_length = f + t
@@ -69,12 +70,15 @@ def SSIM_HSV(src, sample, i, f=10, t=2):
     for r in range(-t, t):
         for s in range(-t, t):
             w_image = padding[t + r:t + H + f + r + 1, t + s:t + W + f + s + 1, :]
-            weight_s = cal(image[:, :, 1], w_image[:, :, 1], eng)
-            weight_v = cal(image[:, :, 2], w_image[:, :, 2], eng)
+            weight_s = cal(image[:, :, 0], w_image[:, :, 0], eng)
+            weight_v = cal(image[:, :, 1], w_image[:, :, 1], eng)
             weight = (weight_s ** i + weight_v ** i) ** (1 / i)
             sum_image = sum_image + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1)) * w_image[f:f + H, f:f + W, :]
             sum_weight = sum_weight + np.array([weight[f:f + H, f:f + W] ** i]).reshape((512, 512, 1))
     out = sum_image / sum_weight
+    cv2.imwrite("s.png", out[:, :, 0])
+    cv2.imwrite("v.png", out[:, :, 1])
+
     return out
 
 
